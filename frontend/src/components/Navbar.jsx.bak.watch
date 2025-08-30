@@ -1,0 +1,52 @@
+import { useEffect, useState } from "react";
+import { Link, NavLink, useNavigate, useLocation } from "react-router-dom";
+
+export default function Navbar(){
+  const nav = useNavigate();
+  const { pathname } = useLocation();
+  const [authed, setAuthed] = useState(!!localStorage.getItem("token"));
+
+  useEffect(() => {
+    const onStorage = (e) => { if (e.key === "token") setAuthed(!!e.newValue); };
+    window.addEventListener("storage", onStorage);
+    return () => window.removeEventListener("storage", onStorage);
+  }, []);
+
+  const logout = () => {
+    localStorage.removeItem("token");
+    setAuthed(false);
+    nav("/");
+  };
+
+  const link = ({isActive}) =>
+    `px-3 py-2 rounded-lg ${isActive ? 'bg-white/30 text-pine' : 'text-ink/80 hover:bg-white/40'}`;
+
+  const inProfile = pathname.startsWith("/profile");
+
+  return (
+    <header className="sticky top-0 z-40">
+      <div className="glass">
+        <div className="container h-16 flex items-center justify-between">
+          <Link to="/" className="font-extrabold tracking-wide text-pine">Senda Suds</Link>
+          <nav className="flex items-center gap-2">
+            <NavLink to="/catalog" className={link}>Catálogo</NavLink>
+            <NavLink to="/cart" className={link}>Carrito</NavLink>
+
+            {authed ? (
+              <>
+                {/* Si ya estás en /profile, solo mostramos Salir */}
+                {inProfile ? null : <NavLink to="/profile" className={link}>Perfil</NavLink>}
+                <button onClick={logout} className={link({isActive:false})}>Salir</button>
+              </>
+            ) : (
+              <>
+                <NavLink to="/login" className={link}>Entrar</NavLink>
+                <NavLink to="/register" className={link}>Registrarse</NavLink>
+              </>
+            )}
+          </nav>
+        </div>
+      </div>
+    </header>
+  );
+}

@@ -1,0 +1,162 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer components {
+  /* Fondo “cueva” suave verde */
+  .bg-aurora {
+    background:
+      radial-gradient(120% 80% at 10% 0%, rgba(207,232,214,.18) 0%, rgba(0,0,0,0) 60%),
+      radial-gradient(90% 70% at 100% 20%, rgba(168,201,183,.16) 0%, rgba(0,0,0,0) 65%),
+      radial-gradient(120% 100% at 50% 100%, rgba(95,143,120,.14) 0%, rgba(0,0,0,0) 60%),
+      linear-gradient(180deg, rgba(15,21,19,.88), rgba(15,21,19,.88));
+  }
+
+  /* Navbar traslúcida */
+  .glass-nav {
+    @apply sticky top-0 z-50 backdrop-blur-md bg-charcoal/60 border-b border-white/10;
+  }
+
+  .nav-link {
+    @apply px-3 py-2 rounded-lg text-cream/90 hover:bg-fern/20 transition-colors;
+  }
+  .nav-link-active {
+    @apply bg-fern/25 text-cream;
+  }
+
+  .card {
+    @apply rounded-xl overflow-hidden shadow-soft bg-white/5 border border-white/10;
+  }
+}
+
+/* --- Collage hero (verde mate + gris traslúcido + wet sheen) --- */
+.bg-matte{
+  /* textura verde mate con luces suaves */
+  background:
+    radial-gradient(1200px 600px at 20% 0%, rgba(62,93,76,0.18), transparent 60%),
+    radial-gradient(900px 500px at 80% 100%, rgba(34,51,44,0.15), transparent 55%),
+    linear-gradient(180deg, #EEF3EE 0%, #CFE3D1 55%, #B8D6BD 100%);
+}
+
+/* reflejos tipo "mojado" muy sutiles, sin burbujas ni brillos agresivos */
+.wet-sheen{
+  position:absolute; inset:0; pointer-events:none;
+  background:
+    radial-gradient(600px 300px at 18% 10%, rgba(255,255,255,.28), transparent 45%),
+    radial-gradient(420px 220px at 85% 92%, rgba(255,255,255,.18), transparent 50%);
+  mix-blend-mode: screen;
+  opacity:.18;
+  transition: opacity .25s ease;
+}
+.group:hover .wet-sheen{ opacity:.28; }
+
+.group:hover .wet-sheen{ opacity:.7; }
+
+/* === Fondo global gris translúcido + verde mate === */
+:root{
+  --ink:#1B1F22;      /* gris oscuro (ya lo tienes en tailwind) */
+  --bone:#F6F5F2;     /* marfil */
+}
+body{
+  color: var(--bone);
+  background:
+    /* capa gris translúcida */
+    linear-gradient(rgba(27,31,34,.55), rgba(27,31,34,.55)),
+    /* mate verdoso (radial suave) */
+    radial-gradient(80% 60% at 20% 0%, #e3eae3 0%, #d6e3d6 45%, #ccdbce 100%);
+  background-attachment: fixed;
+}
+
+/* opcional: navbar efecto cristal suave */
+.nav-glass{
+  background-color: rgba(27,31,34,.75); /* var(--ink) con alpha */
+  -webkit-backdrop-filter: blur(8px);
+  backdrop-filter: blur(8px);
+  border-bottom: 1px solid rgba(255,255,255,.08);
+}
+
+/* Invertir fondo: verde arriba, gris abajo */
+html body{
+  background:
+    /* de verde mate (arriba) a gris (abajo) */
+    linear-gradient(to bottom, rgba(227,234,227,.65) 0%, rgba(27,31,34,.55) 100%),
+    /* mate verdoso suave para textura */
+    radial-gradient(80% 60% at 20% 0%, #e3eae3 0%, #d6e3d6 45%, #ccdbce 100%);
+}
+
+/* ===== Hover: SOLO catálogo ===== */
+.card{
+  transform-style: preserve-3d;
+  transition: transform .35s cubic-bezier(.2,.8,.2,1), box-shadow .35s;
+  will-change: transform, box-shadow;
+}
+
+/* Catálogo: efecto movimiento en hover */
+.catalog-grid .card:hover{
+  transform: translateY(-8px) rotateX(1deg) rotateY(-1deg);
+  box-shadow: 0 24px 50px -20px rgba(0,0,0,.35);
+}
+
+/* Home: SIN efecto (queda solo la sombra suave si la hubiera) */
+.home-hero .card:hover{
+  transform: none;
+  box-shadow: var(--shadow-soft, 0 10px 25px -10px rgba(0,0,0,.15));
+}
+
+/* ==== Focus ring armonizado (sustituye el azul por verde pine) ==== */
+img, a, button { -webkit-tap-highlight-color: transparent; }
+
+/* Elimina el outline azul por defecto */
+a:focus, img:focus, button:focus { outline: none; }
+
+/* Focus accesible pero sutil en la marca */
+a:focus-visible,
+button:focus-visible {
+  outline: 2px solid rgba(31, 75, 63, .35); /* pine */
+  outline-offset: 4px;
+  border-radius: 12px;
+}
+
+/* Si el card es la imagen, resaltamos el propio bloque */
+a:focus-visible img { 
+  box-shadow: 0 0 0 3px rgba(31, 75, 63, .28);
+  border-radius: 12px;
+}
+
+/* ===== UTILIDAD: sin outline/ring en imágenes y contenedores ==== */
+.no-ring, .no-ring:focus, .no-ring:focus-visible, .no-ring:focus-within {
+  outline: none !important;
+  box-shadow: none !important;
+}
+img.no-ring { border: 0 !important; }
+
+/* ===== Portada: verde mate arriba → gris oscuro translúcido abajo ==== */
+.bg-hero{
+  background:
+    linear-gradient(to bottom, rgba(22, 84, 68, .85), rgba(22, 24, 25, .70)),
+    radial-gradient(120% 70% at 50% 0%, rgba(255,255,255,.03), rgba(255,255,255,0) 60%);
+}
+
+/* Eclipse palette — matte black, gold/beige, light gray */
+:root{
+  --ink: 11 11 12;          /* #0B0B0C  negro mate */
+  --gold: 200 168 115;      /* #C8A873  dorado/beige */
+  --bone: 232 224 206;      /* #E8E0CE  beige cálido (texto sobre negro) */
+  --mist: 239 240 243;      /* #EFF0F3  gris claro */
+  --ash: 186 188 194;       /* #BABCC2  gris medio para bordes */
+}
+
+/* Mantén tu fondo suave existente pero con la nueva gama */
+.bg-matte{
+  background: linear-gradient(180deg,
+    rgb(var(--mist)) 0%,
+    rgb(var(--ash) / .35) 100%);
+}
+
+/* Borde y foco armonizados */
+.border-ash{ border-color: rgb(var(--ash) / .35); }
+*:focus-visible{
+  outline: 2px solid rgb(var(--gold) / .55);
+  outline-offset: 2px;
+  border-radius: .5rem;
+}

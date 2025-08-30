@@ -1,0 +1,35 @@
+export const API_URL = import.meta.env.VITE_API_URL || '';
+const BASE = API_URL ? `${API_URL}/api` : '/api';
+
+export async function api(path, { method='GET', body, token } = {}) {
+  const res = await fetch(`${BASE}${path}`, {
+    method,
+    headers: {
+      'Content-Type': 'application/json',
+      ...(token ? { Authorization: `Bearer ${token}` } : {})
+    },
+    body: body ? JSON.stringify(body) : undefined
+  });
+  if (!res.ok) {
+    const text = await res.text().catch(()=>res.statusText);
+    throw new Error(`API ${res.status}: ${text}`);
+  }
+  return res.json();
+}
+/**
+ * Convierte centavos a € con formato es-ES.
+ * Ej: 690 -> "6,90 €"
+ */
+export function price(cents){
+  if (cents == null) return "—";
+  const value = Number(cents) / 100;
+  try{
+    return new Intl.NumberFormat('es-ES', {
+      style: 'currency',
+      currency: 'EUR',
+      minimumFractionDigits: 2
+    }).format(value);
+  }catch(_){
+    return `€${value.toFixed(2)}`;
+  }
+}

@@ -1,0 +1,22 @@
+import axios from "axios";
+
+const api = axios.create({
+  baseURL: import.meta.env.VITE_API_URL || "http://127.0.0.1:5001",
+});
+
+api.interceptors.request.use((config) => {
+  // 1) token desde .env (para entorno dev, forzado)
+  const envToken = import.meta.env.VITE_AUTH_TOKEN;
+  if (envToken) {
+    config.headers.Authorization = `Bearer ${envToken}`;
+    return config;
+  }
+  // 2) token desde localStorage (flujo normal de login)
+  try {
+    const t = localStorage.getItem("token");
+    if (t) config.headers.Authorization = `Bearer ${t}`;
+  } catch (_) {}
+  return config;
+});
+
+export default api;

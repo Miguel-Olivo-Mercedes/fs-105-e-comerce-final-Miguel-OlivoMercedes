@@ -1,0 +1,48 @@
+import { useEffect, useState } from "react";
+import { api } from "../lib/api";
+import ProductCard from "../components/ProductCard";
+
+export default function Catalog(){
+  const [items, setItems] = useState([]);
+  const [q, setQ] = useState("");
+
+  useEffect(() => {
+    api('/products/').then(setItems).catch(console.error);
+  }, []);
+
+  async function addToCart(p){
+    const token = localStorage.getItem('token');
+    if(!token){ alert("Inicia sesión para añadir al carrito"); return; }
+    try{
+      await api('/cart/add', { method:'POST', body:{ product_id: p.id, qty: 1 }, token });
+      alert(`Añadido: ${p.title}`);
+    }catch(e){
+      alert("No se pudo añadir"); console.error(e);
+    }
+  }
+
+  const filtered = items.filter(p => {
+    const t = (p.title||'').toLowerCase();
+    const d = (p.description||'').toLowerCase();
+    const k = q.toLowerCase();
+    return t.includes(k) || d.includes(k);
+  });
+
+  return (
+    <div className="container py-10">
+      <div className="mb-6 flex justify-end">
+        <input
+          className="rounded-lg border border-black/10 px-3 py-2 w-64"
+          placeholder="Buscar…"
+          value={q}
+          onChange={e=>setQ(e.target.value)}
+        />
+      </div>
+      <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
+        {filtered.map(p => (
+          <ProductCard key={p.id} p={p} onAdd={addToCart} />
+        ))}
+      </div>
+    </div>
+  );
+}

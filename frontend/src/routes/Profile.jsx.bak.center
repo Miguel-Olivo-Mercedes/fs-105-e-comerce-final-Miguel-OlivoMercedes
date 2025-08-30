@@ -1,0 +1,78 @@
+import { useEffect, useState } from "react";
+import { api } from "../lib/api";
+import { useNavigate } from "react-router-dom";
+
+export default function Profile(){
+  const navigate = useNavigate();
+  const [me, setMe] = useState(null);
+  const [name, setName] = useState("");
+  const [email, setEmail] = useState("");
+  const [msg, setMsg] = useState("");
+
+  useEffect(() => {
+    api('/auth/me')
+      .then(d => { setMe(d); setName(d.name||""); setEmail(d.email||""); })
+      .catch(err => {
+        // Si no hay token, redirige a login
+        if(String(err).includes("401")) navigate('/login');
+      });
+  }, [navigate]);
+
+  async function save(e){
+    e.preventDefault();
+    try{
+      const updated = await api('/auth/me', {
+        method:'PUT',
+        headers:{ 'Content-Type':'application/json' },
+        body: JSON.stringify({ name, email })
+      });
+      setMe(updated);
+      setMsg("Perfil actualizado ✅");
+    }catch(err){
+      setMsg(String(err).replace("Error: ",""));
+    }
+  }
+
+  async function removeAccount(){
+    if(!confirm("¿Seguro que quieres eliminar tu cuenta? Esta acción es irreversible.")) return;
+    try{
+      await api('/auth/me', { method:'DELETE' });
+      localStorage.removeItem('token');
+      navigate('/');
+    }catch(err){
+      setMsg(String(err).replace("Error: ",""));
+    }
+  }
+
+  if(!me) return <div className="container py-8">Cargando...</div>;
+
+  return (
+    <div className="container py-8">
+      <h1 className="text-2xl font-bold text-pine">Perfil</h1>
+      <form onSubmit={save} className="mt-6 max-w-md space-y-4">
+        <div>
+          <label className="block text-sm mb-1">Nombre</label>
+          <input value={name} onChange={e=>setName(e.target.value)}
+                 className="w-full border rounded-lg px-3 py-2"
+                 required minLength={2} />
+        </div>
+        <div>
+          <label className="block text-sm mb-1">Email</label>
+          <input value={email} onChange={e=>setEmail(e.target.value)}
+                 className="w-full border rounded-lg px-3 py-2"
+                 type="email" required />
+        </div>
+        <div className="flex gap-2">
+          <button type="submit" className="px-4 py-2 rounded-lg bg-white/30 hover:bg-white/40">
+            Guardar cambios
+          </button>
+          <button type="button" onClick={removeAccount}
+                  className="px-4 py-2 rounded-lg bg-white/30 hover:bg-white/40">
+            Eliminar cuenta
+          </button>
+        </div>
+        {msg && <p className="text-sm mt-2">{msg}</p>}
+      </form>
+    </div>
+  );
+}

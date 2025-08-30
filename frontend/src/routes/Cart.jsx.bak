@@ -1,0 +1,60 @@
+import { useEffect, useState } from "react";
+import { api, getCart, price } from "../lib/api";
+
+export default function Cart(){
+  const [cart, setCart] = useState({ items:[], total_cents:0 });
+  const token = typeof window !== "undefined" ? localStorage.getItem("token") : null;
+
+  async function load(){
+    if(!token){ setCart({ items:[], total_cents:0 }); return; }
+    try{
+      const c = await getCart(token);
+      setCart(c);
+    }catch(e){ console.error(e); }
+  }
+  useEffect(()=>{ load(); },[]);
+
+  async function checkout(){
+    if(!token){ alert("Inicia sesión para continuar"); return; }
+    try{
+      const { url } = await api("/checkout/create-session", { method:"POST", token });
+      if(url) window.location.href = url;
+    }catch(e){ alert(e.message); console.error(e); }
+  }
+
+  return (
+    <div className="container py-10">
+      <h1 className="text-2xl font-bold">Tu carrito</h1>
+
+      {cart.items.length === 0 ? (
+        <p className="mt-4 text-gray-600">Aún no hay productos.</p>
+      ) : (
+        <>
+          <ul className="mt-6 space-y-3">
+            {cart.items.map(it => (
+              <li key={it.id} className="p-4 rounded-xl bg-white/70 border border-black/5 flex items-center justify-between">
+                <div className="text-sm">
+                  <div className="font-semibold">#{it.product_id}</div>
+                  <div className="text-gray-600">Cantidad: {it.qty}</div>
+                </div>
+                <div className="text-right font-medium">€ {price(it.subtotal_cents)}</div>
+              </li>
+            ))}
+          </ul>
+
+          <div className="mt-6 flex items-center justify-between">
+            <div className="text-lg font-semibold">
+              Total: € {price(cart.total_cents)}
+            </div>
+            <button
+              onClick={checkout}
+              className="px-5 py-2 rounded-xl bg-pine text-bone hover:opacity-90 transition"
+            >
+              Ir a pago
+            </button>
+          </div>
+        </>
+      )}
+    </div>
+  );
+}

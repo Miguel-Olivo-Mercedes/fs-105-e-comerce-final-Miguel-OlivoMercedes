@@ -1,0 +1,31 @@
+import { Routes, Route } from "react-router-dom";
+import Navbar from "./components/Navbar";
+import Home from "./routes/Home";
+import Catalog from "./routes/Catalog";
+import ProductDetail from "./routes/ProductDetail.jsx";
+import Cart from "./routes/Cart.jsx";
+import Login from "./routes/Login.jsx";
+import Register from "./routes/Register.jsx";
+import Profile from "./routes/Profile.jsx";
+
+function Success(){ return <div className="container py-10"><h1 className="text-2xl font-bold text-pine">¡Pago exitoso!</h1><p className="mt-2">Gracias por tu compra.</p></div>; }
+function NotFound(){ return <div className="container py-8"><h1 className="text-2xl font-bold">Página no encontrada</h1></div>; }
+
+export default function App(){
+  return (
+    <>
+      <Navbar />
+      <Routes>
+        <Route path="/" element={<Home/>} />
+        <Route path="/catalog" element={<Catalog/>} />
+        <Route path="/product/:id" element={<ProductDetail/>} />
+        <Route path="/cart" element={<Cart/>} />
+        <Route path="/login" element={<Login/>} />
+        <Route path="/register" element={<Register/>} />
+        <Route path="/profile" element={<Profile/>} />
+        <Route path="/success" element={<Success/>} />
+        <Route path="*" element={<NotFound/>} />
+      </Routes>
+    </>
+  );
+}

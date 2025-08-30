@@ -1,0 +1,23 @@
+frontend/node_modules/
+senda-suds/senda-suds/.venv/
+__pycache__/
+*.pyc
+*.db
+*.sqlite
+frontend/.env
+# comunes
+.env
+*.pyc
+__pycache__/
+node_modules/
+
+# front
+frontend/node_modules/
+
+# back
+senda-suds/senda-suds/.venv/
+senda-suds/senda-suds/api/instance/
+
+# papelera local
+.trash_*/
+.backup_*/
