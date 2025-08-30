@@ -9,18 +9,19 @@ services:
     envVars:
       - key: FLASK_ENV
         value: production
-      - key: JWT_SECRET_KEY
-        sync: false
       - key: DATABASE_URL
-        sync: false
+        sync: false        # lo pones luego en Render (Postgres)
+      - key: JWT_SECRET_KEY
+        sync: false        # lo pones luego en Render
       - key: CORS_ORIGINS
-        sync: false
+        sync: false        # ej: https://TU-FRONT.onrender.com
 
-  - type: static
+  - type: web
     name: senda-suds-frontend
+    env: static
     rootDir: frontend
     buildCommand: npm ci && npm run build
     staticPublishPath: dist
     envVars:
       - key: VITE_API_URL
-        sync: false
+        sync: false        # ej: https://TU-BACK.onrender.com/api
