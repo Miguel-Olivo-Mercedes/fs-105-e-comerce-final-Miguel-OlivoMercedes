@@ -1,0 +1,26 @@
+services:
+  - type: web
+    name: senda-suds-backend
+    env: python
+    rootDir: senda-suds/senda-suds/api
+    buildCommand: pip install -r requirements.txt
+    startCommand: gunicorn app:app --bind 0.0.0.0:$PORT
+    plan: free
+    envVars:
+      - key: FLASK_ENV
+        value: production
+      - key: JWT_SECRET_KEY
+        sync: false
+      - key: DATABASE_URL
+        sync: false
+      - key: CORS_ORIGINS
+        sync: false
+
+  - type: static
+    name: senda-suds-frontend
+    rootDir: frontend
+    buildCommand: npm ci && npm run build
+    staticPublishPath: dist
+    envVars:
+      - key: VITE_API_URL
+        sync: false
