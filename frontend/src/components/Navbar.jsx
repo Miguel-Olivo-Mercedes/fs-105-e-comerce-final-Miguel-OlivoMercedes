@@ -1,30 +1,28 @@
-import { useState, useEffect } from "react";
-import { Link, NavLink, useLocation } from "react-router-dom";
+import { useEffect, useState } from "react";
+import { Link, NavLink } from "react-router-dom";
 
 export default function Navbar(){
-  const location = useLocation();
-  const [isAuth, setIsAuth] = useState(!!localStorage.getItem('token'));
-
-  // Recalcula al cambiar de ruta
-  useEffect(() => {
-    setIsAuth(!!localStorage.getItem('token'));
-  }, [location.key]);
-
-  // (opcional) si el token cambia desde otra pestaña
-  useEffect(() => {
-    const onStorage = () => setIsAuth(!!localStorage.getItem('token'));
-    window.addEventListener('storage', onStorage);
-    return () => window.removeEventListener('storage', onStorage);
-  }, []);
-
   const link = ({isActive}) =>
     `px-3 py-2 rounded-lg ${isActive ? 'bg-white/30 text-pine' : 'text-ink/80 hover:bg-white/40'}`;
+
+  // estado de sesión simple leyendo el token
+  const [isAuth, setIsAuth] = useState(!!localStorage.getItem('token'));
+
+  // escucha cambios (p.ej. login/logout en otras vistas)
+  useEffect(() => {
+    const on = () => setIsAuth(!!localStorage.getItem('token'));
+    window.addEventListener('storage', on);
+    window.addEventListener('auth-changed', on);
+    return () => {
+      window.removeEventListener('storage', on);
+      window.removeEventListener('auth-changed', on);
+    };
+  }, []);
 
   function logout(){
     localStorage.removeItem('token');
     setIsAuth(false);
-    // opcional: volver al home
-    window.location.href = "/";
+    window.dispatchEvent(new Event('auth-changed'));
   }
 
   return (
@@ -32,10 +30,10 @@ export default function Navbar(){
       <div className="glass">
         <div className="container h-16 flex items-center justify-between">
           <Link to="/" className="font-extrabold tracking-wide text-pine">Senda Suds</Link>
-
           <nav className="flex items-center gap-2">
             <NavLink to="/catalog" className={link}>Catálogo</NavLink>
             <NavLink to="/cart" className={link}>Carrito</NavLink>
+            {isAuth && <NavLink to="/orders" className={link}>Pedidos</NavLink>}
 
             {!isAuth ? (
               <>
@@ -43,9 +41,7 @@ export default function Navbar(){
                 <NavLink to="/register" className={link}>Registrarse</NavLink>
               </>
             ) : (
-              <button onClick={logout} className="px-3 py-2 rounded-lg text-ink/80 hover:bg-white/40">
-                Salir
-              </button>
+              <button onClick={logout} className={link}>Salir</button>
             )}
           </nav>
         </div>

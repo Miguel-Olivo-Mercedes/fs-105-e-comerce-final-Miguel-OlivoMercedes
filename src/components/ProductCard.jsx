@@ -1,8 +1,10 @@
+import { useState } from "react";
 import { Link } from "react-router-dom";
 
 export default function ProductCard({ p, onAdd }){
-  // Usa ESTRICTAMENTE la imagen local en /public con patrón /Image<slug>.png
-  const src = `/Image${p.slug}.png`;
+  const localSrc = `/Image${p.slug}.png`;       // imagen en /public
+  const remoteSrc = p?.image_url || "";         // URL remota de la API
+  const [src, setSrc] = useState(localSrc);     // primero intenta local
 
   return (
     <div className="card overflow-hidden">
@@ -12,6 +14,9 @@ export default function ProductCard({ p, onAdd }){
           alt={p.title}
           loading="lazy"
           className="w-full h-48 object-cover"
+          onError={() => {
+            if (src !== remoteSrc && remoteSrc) setSrc(remoteSrc);
+          }}
         />
       </Link>
       <div className="p-4">

@@ -21,3 +21,4 @@ def register_routes(app):
         app.register_blueprint(users_bp,  url_prefix='/api/users')
     if cart_bp:
         app.register_blueprint(cart_bp,   url_prefix='/api/cart')
+    app.register_blueprint(orders_bp,     url_prefix='/api/orders')

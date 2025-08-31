@@ -1,3 +1,4 @@
+import Orders from "./routes/Orders.jsx";
 import Success from "./routes/Success.jsx";
 import { Routes, Route } from "react-router-dom";
 import Navbar from "./components/Navbar";
@@ -29,6 +30,7 @@ export default function App(){
         <Route path="/success" element={<Success/>} />
         <Route path="*" element={<NotFound/>} />
         <Route path="/product/:pid" element={<ProductDetail/>} />
+      <Route path="/orders" element={<Orders />} />
     </Routes>
     </>
   );
