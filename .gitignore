@@ -21,3 +21,6 @@ senda-suds/senda-suds/api/instance/
 # papelera local
 .trash_*/
 .backup_*/
+
+# Local env
+.venv/

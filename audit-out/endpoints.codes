@@ -1,0 +1,4 @@
+/api/products/               200
+/api/categories/             200
+/api/auth/login              405
+/api/cart/                   401

@@ -1,0 +1,17 @@
+RULE                                METHODS
+/api/auth/login                     POST
+/api/auth/me                        GET
+/api/auth/me                        PUT
+/api/auth/me                        DELETE
+/api/auth/register                  POST
+/api/cart/                          GET
+/api/cart/add                       POST
+/api/cart/item/<int:item_id>        PUT
+/api/cart/item/<int:item_id>        DELETE
+/api/categories/                    GET
+/api/checkout/create-session        POST
+/api/health                         GET
+/api/orders/                        GET
+/api/orders/<int:oid>               GET
+/api/products/                      GET
+/api/products/<int:pid>             GET

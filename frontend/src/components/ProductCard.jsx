@@ -1,18 +1,24 @@
+import { useState } from "react";
 import { Link } from "react-router-dom";
 
 export default function ProductCard({ p, onAdd }){
-  // Usa ESTRICTAMENTE la imagen local en /public con patrón /Image<slug>.png
-  const src = `/Image${p.slug}.png`;
+  const [failed, setFailed] = useState(false);
+  const src = `/Image${p.slug}.png`; // SOLO local: frontend/public/Image<slug>.png
 
   return (
     <div className="card overflow-hidden">
       <Link to={`/product/${p.id}`}>
-        <img
-          src={src}
-          alt={p.title}
-          loading="lazy"
-          className="w-full h-48 object-cover"
-        />
+        {!failed ? (
+          <img
+            src={src}
+            alt={p.title}
+            loading="lazy"
+            className="w-full h-48 object-cover"
+            onError={() => setFailed(true)}  // si no existe, mostramos fallback
+          />
+        ) : (
+          <div className="w-full h-48 bg-gradient-to-br from-brand-200 to-brand-400" />
+        )}
       </Link>
       <div className="p-4">
         <h3 className="font-semibold text-lg mb-1">
